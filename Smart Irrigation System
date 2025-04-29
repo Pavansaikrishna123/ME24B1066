@@ -1,0 +1,325 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+int front=-1,rear=-1,top=-1;int size=6;
+int count=0;
+char queue[6][20];char stack[6][20];
+struct sllnode//Structure for single Linked List
+{
+    char data[20];
+    struct sllnode* next;
+};
+struct dllnode//Structure for double Linked List
+{
+    char data[20];
+    struct dllnode* next;
+    struct dllnode* prev;
+};
+void sllappend(struct sllnode** head,char value[])//to insert to single linked list
+{
+    struct sllnode* n=(struct sllnode*)malloc(sizeof(struct sllnode));
+    strcpy(n->data,value);
+    n->next=NULL;
+    if(*head==NULL)
+    {
+        *head=n;
+    }
+    else
+    {
+        struct sllnode* p;
+        p=*head;
+        while(p->next!=NULL)
+        {
+            p=p->next;
+        }
+        p->next=n;
+    }
+}
+struct sllnode* slldelete(struct sllnode** head,char value[])//to delete from single linked list
+{
+    struct sllnode* temp=*head;
+    struct sllnode* prev=NULL;
+    while(temp!=NULL&&strcmp(temp->data,value)!=0)
+    {
+        prev=temp;
+        temp=temp->next;
+    }
+    if(temp==NULL)
+    {
+        return NULL;
+    }
+    if(prev==NULL)
+    {
+        *head=temp->next;
+    }
+    else
+    {
+        prev->next=temp->next;
+    }
+    return temp;
+}
+void cllappend(struct sllnode** head,char value[])//to insert to circular linked list
+{
+    struct sllnode* n=(struct sllnode*)malloc(sizeof(struct sllnode));
+    strcpy(n->data,value);
+    n->next=NULL;
+    if(*head==NULL)
+    {
+        *head=n;
+        n->next=*head;
+    }
+    else
+    {
+        struct sllnode* p;
+        p=*head;
+        while(p->next!=*head)
+        {
+            p=p->next;
+        }
+        p->next=n;
+        n->next=*head;
+    }
+}
+void dllappend(struct dllnode** head,struct sllnode* node)//to insert to double linked list
+{
+    struct dllnode* n=(struct dllnode*)malloc(sizeof(struct dllnode));
+    strcpy(n->data,node->data);
+    n->next=NULL;
+    n->prev=NULL;
+    if(*head==NULL)
+    {
+        *head=n;
+    }
+    else
+    {
+        struct dllnode* p;
+        p=*head;
+        while(p->next!=NULL)
+        {
+            p=p->next;
+        }
+        p->next=n;
+        n->prev=p;
+        n->next=NULL;
+    }
+}
+void enqueue(char data[])//to insert elements into queue
+{
+    if(rear==size-1)
+    {
+        printf("\nQueue is Full\n");
+    }
+    else
+    {
+        if(front==-1)
+        {
+            front=0;
+        }
+        rear++;
+        strcpy(queue[rear],data);
+    }
+}
+char* dequeue()//to remove element from queue
+{
+    if(front==-1)
+    {
+        printf("Queue is Empty\n");
+        return NULL;
+    }
+    if(front==rear)
+    {
+        int temp = front;
+        front = rear = -1;
+        return queue[temp];
+
+    }
+    else
+    {
+        front++;
+        return queue[front-1];
+    }
+}
+void push(char data[])//to insert element into stack
+{
+    if(top==size-1)
+    {
+        printf("\nStack is Full\n");
+        return;
+    }
+    top++;
+    strcpy(stack[top],data);
+}
+void pop()//to remove element from stack
+{
+    if(top==-1)
+    {
+        printf("\nStack is Empty\n");
+        return;
+    }
+    printf("%s\n",stack[top]);
+    top--;
+}
+void display(struct sllnode* head)
+{
+    struct sllnode* p=head;
+    printf("Single Linked List:");
+    while(p!=NULL)
+    {
+        printf("%s->",p->data);
+        p=p->next;
+    }
+    printf("NULL\n");
+}
+void task1()//to take request input using queue
+{
+    char req[20];int i=0;
+    while(i<size)
+    {
+        printf("Enter Request: ");
+        scanf("%s", req);
+        enqueue(req);
+        i++;
+    }
+    i=0;
+    while(i<size)
+    {
+        push(dequeue());
+        i++;
+    }
+    printf("\nWatering Order:\n");
+    while(top!=-1)
+    {
+        pop();
+    }
+}
+void task2()//to take log usages
+{
+    char arr[5][20];
+    char use[20];
+    int i=0;size=5;
+    while(i<7)
+    {
+        printf("Enter logging Usage:");
+        scanf("%s", use);
+        if(i<5) 
+        {
+            strcpy(arr[i],use);
+        }
+        else
+        {
+            printf("Overwriting:%s\n",arr[0]);
+            int k=0;
+            while(k<size-1)
+            {
+                strcpy(arr[k],arr[k+1]);
+                k++;
+            }
+            strcpy(arr[k],use);
+        }
+        i++;
+    }
+     printf("Final Log Usages:\n");
+    for(int i=0;i<size;i++)
+    {
+        printf("%s ",arr[i]);
+    }
+
+        printf("\n");
+}
+void task3()//to track leakage components
+{
+    struct sllnode* ftskhead=NULL;
+    struct dllnode* retrytskhead=NULL;
+    printf("\nPipe and Sprinkler are leaked components.\n");
+    sllappend(&ftskhead,"Pipe");
+    sllappend(&ftskhead,"Sprinkler");
+    display(ftskhead);
+    struct sllnode* deletedtsk=slldelete(&ftskhead,"Pipe");
+    dllappend(&retrytskhead,deletedtsk);
+    printf("Pipe is Fixed.\n");
+    display(ftskhead);
+    printf("Fixed List:\n");
+    struct dllnode* p1=retrytskhead;
+    printf("\nForward Traversal: ");
+    while(p1!=NULL)
+    {
+        printf("%s-> ",p1->data);
+        p1 = p1->next;
+    }
+    printf("NULL\n");
+    struct dllnode* p2=retrytskhead;
+    printf("Backward Traversal: ");
+    while(p2->next!=NULL)
+    {
+        p2=p2->next;
+    }
+    while(p2!=NULL)
+    {
+        printf("%s->",p2->data);
+        p2 = p2->prev;
+    }
+    printf("NULL\n");
+
+}
+void task4()//priority fixes
+{
+  struct sllnode* ftskhead=NULL;
+  printf("Pump and Valve need urgent fixing.\n");
+  cllappend(&ftskhead,"Pump");
+  cllappend(&ftskhead,"Valve");
+  printf("The Circular list:\n");
+  struct sllnode* p1=ftskhead;
+  printf("1st Traversal:\n");
+  while(p1->next!=ftskhead)
+  {
+      printf("%s\t", p1->data);
+      p1=p1->next;
+  }
+  printf("%s\n",p1->data);
+  p1=p1->next;
+  printf("2nd Traversal:\n ");
+  while(p1->next!=ftskhead)
+  {
+      printf("%s\t", p1->data);
+      p1=p1->next;
+  }
+  printf("%s\n",p1->data);
+  printf("Pump and Valve are Fixed\n");
+}
+void main()
+{
+    int ch;
+    printf("Select the Component:\n1.Request and Emergency \n2.Water Usage Log \n3. Leaky Component Tracker\n4.Priority Fixes \n");
+    for(int i=0;i<10;i++)
+    {
+        printf("Enter your choice:");
+        scanf("%d",&ch);//prompts user for input
+        switch(ch)
+        {
+            case 1:
+            {
+               task1();
+               break;
+            }
+            case 2:
+            {
+                task2();
+                break;
+            }
+            case 3:
+            {
+                task3();
+                break;
+            }
+            case 4:
+            {
+                task4();
+                break;
+            }
+            default:
+            {
+                printf("Invalid Task.Exiting.....\n");
+            }
+        }
+    }
+}
