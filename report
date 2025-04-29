@@ -1,0 +1,49 @@
+//QUESTION-9
+//PAVAN
+//ME24B1066
+// Problem Statement
+This project simulates a Smart Irrigation System Optimizer that handles:
+- User requests for irrigation components
+- Emergency drought alerts
+- Water usage logging
+- Component failures and their resolution
+- Prioritization of urgent tasks.
+The objective is to efficiently manage and track system components using data structures.
+// Design Explanation
+We used a combination of:
+- Queue for handling incoming user requests in FIFO order.
+- Stack for drought alerts (LIFO).
+- Array for logging water usage with overwrite on overflow.
+- Singly Linked List for listing failed components.
+- Doubly Linked List for retry tracking of fixed components with forward and backward traversal.
+- Circular Linked List for urgent fix scheduling and rescheduling.
+Each structure was selected based on real-world behavior it best mimics in the irrigation system.
+// Logic of the Code
+Task 1:Simulate 6 user requests using a queue and then reverse the order using a stack to show which gets watered last.
+Task 2:Log 7 usages into a 5-slot array. On overflow, the oldest entry is removed (FIFO logic).
+Task 3:Track failed components (e.g., Pipe, Sprinkler) in an SLL. Upon fixing, move them to a DLL for history tracking.
+Task 4:Urgent tasks (Pump, Valve) are inserted into a circular list to enable continuous monitoring and scheduling.
+// Variables and Functions Used
+Function/Variable
+Purpose
+
+enqueue, dequeue
+Handle request queue
+
+push, pop
+Manage drought alerts in LIFO
+
+arr[5][20]
+Fixed-size array for usage logging with overflow handling
+
+sllappend, slldelete
+Manage failed components in a singly linked list
+
+dllappend
+Track repaired components in doubly linked list
+
+cllappend
+Insert urgent components into a circular list
+
+task1 - task4()
+Functions representing different modules of the system
